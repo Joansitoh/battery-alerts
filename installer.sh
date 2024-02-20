@@ -191,7 +191,7 @@ uninstall_service() {
 }
 
 update_script() {
-    SCRIPT_NAME="installer.sh"
+    SCRIPT_NAME="/usr/bin/battery-alerts"
     if [ ! -f "$SCRIPT_NAME" ]; then
         echo "The script $SCRIPT_NAME is not installed on the system. Please install it before trying to update."
         exit 1
@@ -200,11 +200,11 @@ update_script() {
     echo "Updating $SCRIPT_NAME from GitHub..."
     temp_dir=$(mktemp -d)
     git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir"
-    if cmp -s "$SCRIPT_NAME" "$temp_dir/$SCRIPT_NAME"; then
+    if cmp -s "$SCRIPT_NAME" "$temp_dir/installer.sh"; then
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME is up to date."
     else
-        mv "$temp_dir/$SCRIPT_NAME" "$SCRIPT_NAME"
-        chmod +x "$SCRIPT_NAME"
+        sudo mv "$temp_dir/installer.sh" "$SCRIPT_NAME"
+        sudo chmod +x "$SCRIPT_NAME"
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME has been successfully updated."
     fi
     rm -rf "$temp_dir"
