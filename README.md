@@ -38,7 +38,8 @@
 ## 📍 Overview
 
 ![Low battery notification](https://imgur.com/o4vQPIe.png)
-![Charging battery notification](https://imgur.com/OlvLSwY.png)
+![Charging battery notification](https://imgur.com/ubEpxui.png)
+![DIscharging battery notification](https://imgur.com/uXlkGNg.png)
 
 ---
 
