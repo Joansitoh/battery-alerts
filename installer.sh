@@ -58,8 +58,20 @@ start_service() {
         echo -e "[${RED}ERROR${NC}] $SERVICE_NAME is not installed. Please install it first."
     fi
 }
+
 run_battery_monitor() {
+    # Check if the battery-alerts service is running
+    if systemctl is-active --quiet $SERVICE_NAME; then
+        echo -e "[${GREEN}SUCCESS${NC}] $SERVICE_NAME is already running."
+        exit 1
+    fi
+
+    run_monitor
+}
+
+run_monitor() {
     echo "Running battery monitor..."
+
     while true; do
         check_battery_status
         sleep 1  # Check battery status every second
@@ -125,7 +137,7 @@ Description=Battery Monitor Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/$SCRIPT_NAME -r
+ExecStart=/usr/bin/$SCRIPT_NAME -fr
 Restart=always
 User=$USER
 Environment=DISPLAY=:0
@@ -287,6 +299,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -r|--run)
             run_battery_monitor
+            exit 0
+            ;;
+        -fr|--frun)
+            run_monitor
             exit 0
             ;;
         -t|--start)
