@@ -79,7 +79,7 @@ chmod +x installer.sh
 ./installer.sh
 ```
 
-### 🤖 Commands
+### 🤖 Running battery-alerts
 
 You can use the `battery-alerts` command.
 
