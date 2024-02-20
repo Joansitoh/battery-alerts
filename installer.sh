@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Variables
-SCRIPT_NAME="battery-monitor"
+SCRIPT_NAME="battery-alerts"
 DEPENDENCIES=("acpi" "notify-send")
 MAN_PAGE="/usr/local/share/man/man1/$SCRIPT_NAME.1"
-SERVICE_NAME="battery-monitor.service"
+SERVICE_NAME="battery-alerts.service"
 SYSTEMD_PATH="/etc/systemd/system/$SERVICE_NAME"
 
 # Constants for colored output
@@ -191,15 +191,21 @@ uninstall_service() {
 }
 
 update_script() {
+    SCRIPT_NAME="installer.sh"
+    if [ ! -f "$SCRIPT_NAME" ]; then
+        echo "The script $SCRIPT_NAME is not installed on the system. Please install it before trying to update."
+        exit 1
+    fi
+
     echo "Updating $SCRIPT_NAME from GitHub..."
     temp_dir=$(mktemp -d)
-    git clone https://github.com/Joansitoh/battery-monitor.git "$temp_dir"
-    if cmp -s "$0" "$temp_dir/$SCRIPT_NAME.sh"; then
+    git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir"
+    if cmp -s "$SCRIPT_NAME" "$temp_dir/$SCRIPT_NAME"; then
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME is up to date."
     else
-        mv "$temp_dir/$SCRIPT_NAME.sh" "$0"
-        chmod +x "$0"
-        echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME updated successfully."
+        mv "$temp_dir/$SCRIPT_NAME" "$SCRIPT_NAME"
+        chmod +x "$SCRIPT_NAME"
+        echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME has been successfully updated."
     fi
     rm -rf "$temp_dir"
 }
