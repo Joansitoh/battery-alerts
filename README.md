@@ -25,7 +25,6 @@
 
 > - [📍 Overview](#-overview)
 > - [📦 Features](#-features)
-> - [🧩 Modules](#-modules)
 > - [🚀 Getting Started](#-getting-started)
 >   - [⚙️ Installation](#️-installation)
 >   - [🤖 Running battery-alerts](#-running-battery-alerts)
@@ -49,25 +48,15 @@ Batery notifications for modified desktop environments.
 
 ---
 
-## 🧩 Modules
-
-<details closed><summary>.</summary>
-
-| File                                                                                 | Summary                                  |
-| ---                                                                                  | ---                                      |
-| [installer.sh](https://github.com/Joansitoh/battery-alerts/blob/master/installer.sh) | Main script |
-
-</details>
-
----
-
 ## 🚀 Getting Started
 
-***Requirements***
+**_Requirements_**
 
 Ensure you have the following dependencies installed on your system:
 
-* **Shell**: `version x.y.z`
+- **Shell**: `version x.y.z`
+- **acpi**: `version 1.7.0`
+- **notify-send**: `version 0.8.3`
 
 ### ⚙️ Installation
 
@@ -83,26 +72,21 @@ git clone https://github.com/Joansitoh/battery-alerts
 cd battery-alerts
 ```
 
-3. Install the dependencies:
+3. Execute and follow the instructions in the installer script:
 
 ```sh
 chmod +x installer.sh
+./installer.sh
 ```
 
-### 🤖 Install battery-alerts
+### 🤖 Commands
 
-Use the following command to install battery-alerts:
-
-```sh
-./installer.sh --install
-```
-
-Then, you can use the `battery-alerts` command.
+You can use the `battery-alerts` command.
 
 ```sh
-.battery-alerts --help
-.battery-alerts --status
-.battery-alerts --start
+battery-alerts --help
+battery-alerts --status
+battery-alerts --start
 ```
 
 ### 🧪 Tests
@@ -110,14 +94,14 @@ Then, you can use the `battery-alerts` command.
 To execute tests, run:
 
 ```sh
-.battery-alerts --run
+battery-alerts --run
 ```
 
 ---
 
 ## 🛠 Project Roadmap
 
-- [X] `► Work fine`
+- [x] `► Work fine`
 - [ ] `► Work fine`
 
 ---
