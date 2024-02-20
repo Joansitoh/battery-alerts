@@ -229,8 +229,8 @@ check_battery_status() {
 
     # Send notifications only if battery status changes
     if [ "$battery_level" != "$prev_battery_level" ]; then
-        # Notify if battery is decreasing below 25%, 15%, 10%, or 5%
-        if [ $battery_level -le 25 ] && [ $battery_level -gt 15 ] || [ $battery_level -eq 15 ] || [ $battery_level -eq 10 ] || [ $battery_level -eq 5 ]; then
+        # Notify if battery is decreasing below 25%, 15%, 10%, or 5% and battery is not charging
+        if [ "$battery_charging" != "Charging" ] && ([ $battery_level -le 25 ] && [ $battery_level -gt 15 ] || [ $battery_level -eq 15 ] || [ $battery_level -eq 10 ] || [ $battery_level -eq 5 ]); then
             notify-send "Low battery level" "Your current battery level is at $battery_level%. Connect your charger." -u critical -i "battery-low" -t 5000 -r 778
         fi
 
@@ -249,7 +249,6 @@ check_battery_status() {
     # Save current charging status for next check
     prev_battery_charging=$battery_charging
 }
-
 
 check_systemd_service() {
     if systemctl is-active --quiet "$SERVICE_NAME"; then
