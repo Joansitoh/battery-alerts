@@ -211,7 +211,7 @@ update_script() {
 
     echo "Updating $SCRIPT_NAME from GitHub..."
     temp_dir=$(mktemp -d)
-    git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir"
+    git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir" &>/dev/null
     if cmp -s "$SCRIPT_NAME" "$temp_dir/installer.sh"; then
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME is up to date."
     else
