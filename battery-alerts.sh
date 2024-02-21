@@ -115,9 +115,9 @@ check_battery_status() {
 
     # Notify if device changes charging status
     if [ "$battery_charging" == "Charging" ] && [ "$prev_battery_charging" != "Charging" ]; then
-        notify-send "Charging" "$battery_level% of battery charged." -u low -i "battery-charging" -t 5000 -r 777
+        notify-send "Charging" "$battery_level% of battery charged." -u low -i "battery-full-charged" -t 5000 -r 777
     elif [ "$battery_charging" == "Discharging" ] && [ "$prev_battery_charging" == "Charging" ]; then
-        notify-send "Discharging" "$battery_level% of battery remaining." -u low -i "battery-full-charged" -t 5000 -r 777
+        notify-send "Discharging" "$battery_level% of battery remaining." -u low -i "battery-charging" -t 5000 -r 777
     elif [ "$battery_charging" == "Discharging" ] && [ "$prev_battery_charging" != "Discharging" ]; then
         notify-send "Discharging" "$battery_level% of battery remaining." -u low -i "battery-low" -t 5000 -r 777
     fi
