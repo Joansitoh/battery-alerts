@@ -111,24 +111,21 @@ get_battery_level(){
 check_battery_status() {
     battery_info=$(acpi)
     battery_level=$(echo "$battery_info" | grep -oP '\d+(?=%)')
-    battery_level_range=$(get_battery_level)
     battery_charging=$(echo "$battery_info" | grep -oP 'Charging|Discharging')
 
-    # Send notifications only if battery status changes
-    if [ "$battery_level" != "$prev_battery_level" ]; then
-        # Notify if battery is decreasing below 25%, 15%, 10%, or 5% and battery is not charging
-        if [ "$battery_charging" != "Charging" ] && ([ $battery_level -le 25 ] && [ $battery_level -gt 15 ] || [ $battery_level -eq 15 ] || [ $battery_level -eq 10 ] || [ $battery_level -eq 5 ]); then
-            # Check if notification for this range has already been sent
-            if [ "${battery_low_notified[$battery_level_range]}" != "true" ]; then
-                notify-send "Low battery level" "Your current battery level is at $battery_level%. Connect your charger." -u critical -i "battery-low" -t 5000 -r 778
-                battery_low_notified[$battery_level_range]="true"
-            fi
-        else
-            # Reset notification flag for this range
-            unset battery_low_notified[$battery_level]
-        fi
+    battery_range=$(get_battery_level)
 
-        prev_battery_level=$battery_level  # Update previous battery level
+    # If the current range is not the same as the previous range, then the battery level has changed
+    if [ "$battery_charging" != "Charging" ]; then
+        if [ $battery_level -le 25 ] && [ $battery_level -gt 15 ] || [ $battery_level -eq 15 ] || [ $battery_level -eq 10 ] || [ $battery_level -eq 5 ]; then
+            # If has not been notified, then notify (prev_battery_range)
+            if [ "$prev_battery_range" != "$battery_range" ]; then
+                notify-send "Low battery level" "Your current battery level is at $battery_level%. Connect your charger." -u critical -i "battery-low" -t 5000 -r 778
+                prev_battery_range=$battery_range
+            fi
+        fi
+    else
+        prev_battery_range=""
     fi
 
     # Notify if device changes charging status
@@ -148,7 +145,7 @@ check_battery_status() {
 run_monitor() {
     print_message "info" "Running battery monitor..."
 
-    prev_battery_level=""
+    prev_battery_range=""
     prev_battery_charging=""
 
     while true; do
@@ -207,19 +204,19 @@ uninstall_service() {
 }
 
 update_script() {
-    SCRIPT_NAME="/usr/bin/battery-alerts"
-    if [ ! -f "$SCRIPT_NAME" ]; then
-        echo "The script $SCRIPT_NAME is not installed on the system. Please install it before trying to update."
+    SCRIPT_PATH="/usr/bin/$SCRIPT_NAME"
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "The script $SCRIPT_PATH is not installed on the system. Please install it before trying to update."
         exit 1
     fi
 
     echo "Updating $SCRIPT_NAME from GitHub..."
     temp_dir=$(mktemp -d)
     git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir" &>/dev/null
-    if cmp -s "$SCRIPT_NAME" "$temp_dir/installer.sh"; then
+    if cmp -s "$SCRIPT_PATH" "$temp_dir/$SCRIPT_NAME.sh"; then
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME is up to date."
     else
-        sudo mv "$temp_dir/installer.sh" "$SCRIPT_NAME"
+        sudo mv "$temp_dir/$SCRIPT_NAME.sh" "$SCRIPT_NAME"
         sudo chmod +x "$SCRIPT_NAME"
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME has been successfully updated."
     fi
