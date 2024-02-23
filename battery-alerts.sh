@@ -91,9 +91,27 @@ show_status() {
     check_script_execution
 }
 
+get_battery_level(){
+    # Get battery level string from ranges
+    # Example: 25-15 = 25, 15-10 = 15, 10-5 = 10, 5-0 = 5
+    battery_level=$(echo "$battery_info" | grep -oP '\d+(?=%)')
+    if [ $battery_level -le 25 ] && [ $battery_level -gt 15 ]; then
+        echo "25"
+    elif [ $battery_level -le 15 ] && [ $battery_level -gt 10 ]; then
+        echo "15"
+    elif [ $battery_level -le 10 ] && [ $battery_level -gt 5 ]; then
+        echo "10"
+    elif [ $battery_level -le 5 ]; then
+        echo "5"
+    else
+        echo "0"
+    fi
+}
+
 check_battery_status() {
     battery_info=$(acpi)
     battery_level=$(echo "$battery_info" | grep -oP '\d+(?=%)')
+    battery_level_range=$(get_battery_level)
     battery_charging=$(echo "$battery_info" | grep -oP 'Charging|Discharging')
 
     # Send notifications only if battery status changes
@@ -101,9 +119,9 @@ check_battery_status() {
         # Notify if battery is decreasing below 25%, 15%, 10%, or 5% and battery is not charging
         if [ "$battery_charging" != "Charging" ] && ([ $battery_level -le 25 ] && [ $battery_level -gt 15 ] || [ $battery_level -eq 15 ] || [ $battery_level -eq 10 ] || [ $battery_level -eq 5 ]); then
             # Check if notification for this range has already been sent
-            if [ "${battery_low_notified[$battery_level]}" != "true" ]; then
+            if [ "${battery_low_notified[$battery_level_range]}" != "true" ]; then
                 notify-send "Low battery level" "Your current battery level is at $battery_level%. Connect your charger." -u critical -i "battery-low" -t 5000 -r 778
-                battery_low_notified[$battery_level]="true"
+                battery_low_notified[$battery_level_range]="true"
             fi
         else
             # Reset notification flag for this range
