@@ -19,8 +19,9 @@ Usage: ${SCRIPT_NAME} [options]
 Options:
   -h, --help      Show this help message and exit
   -r, --run       Start ${SCRIPT_NAME} systemd service
-  -u, --uninstall Uninstall ${SCRIPT_NAME} and systemd service
-  -v, --update    Update ${SCRIPT_NAME} from GitHub
+  -u, --update    Update ${SCRIPT_NAME} from GitHub
+  -U, --uninstall Uninstall ${SCRIPT_NAME} and systemd service
+  -v, --version   Show version of ${SCRIPT_NAME}
   -c, --check     Check dependencies
   -s, --status    Show status of dependencies, systemd service, and execution
 EOF
@@ -38,6 +39,10 @@ print_message() {
     esac
 
     echo -e "[${color}${type^^}${NC}] ${message}"
+}
+
+show_version() {
+    echo "${SCRIPT_NAME} v1.0.0"
 }
 
 check_dependencies() {
@@ -239,8 +244,9 @@ while [[ $# -gt 0 ]]; do
         -t) run_monitor; exit 0 ;;
         -h|--help) show_help; exit 0 ;;
         -r|--run) start_service; exit 0 ;;
-        -v|--update) update_script; exit 0 ;;
-        -u|--uninstall) uninstall_service; exit 0 ;;
+        -v|--version) show_version; exit 0 ;;
+        -u|--update) update_script; exit 0 ;;
+        -U|--uninstall) uninstall_service; exit 0 ;;
         -c|--check) check_dependencies; exit 0 ;;
         -s|--status) show_status; exit 0 ;;
         -i|--install) install_service; exit 0 ;;
