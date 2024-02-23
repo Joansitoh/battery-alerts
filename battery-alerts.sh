@@ -173,6 +173,15 @@ start_service() {
 uninstall_service() {
     echo "Uninstalling $SCRIPT_NAME..."
 
+    # Ask for user confirmation
+    read -p "Are you sure you want to uninstall $SCRIPT_NAME? (y/n) " -n 1 -r
+    echo    # move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        echo "Uninstallation cancelled by user."
+        return 1
+    fi
+
     # Check if the systemd service is installed
     if systemctl is-enabled --quiet $SERVICE_NAME; then
         # Stop the service if it's running
