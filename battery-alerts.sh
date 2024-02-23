@@ -221,12 +221,14 @@ update_script() {
 
     echo "Updating $SCRIPT_NAME from GitHub..."
     temp_dir=$(mktemp -d)
+    temp_script="$temp_dir/$SCRIPT_NAME.sh"
+
     git clone https://github.com/Joansitoh/battery-alerts.git "$temp_dir" &>/dev/null
-    if cmp -s "$SCRIPT_PATH" "$temp_dir/$SCRIPT_NAME.sh"; then
+    if cmp -s "$SCRIPT_PATH" "$temp_script"; then
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME is up to date."
     else
-        sudo mv "$temp_dir/$SCRIPT_NAME.sh" "$SCRIPT_NAME"
-        sudo chmod +x "$SCRIPT_NAME"
+        sudo mv "$temp_script" "$SCRIPT_PATH"
+        sudo chmod +x "$SCRIPT_PATH"
         echo -e "[${GREEN}SUCCESS${NC}] $SCRIPT_NAME has been successfully updated."
     fi
     rm -rf "$temp_dir"
